@@ -7,7 +7,7 @@
 
 #define RCVBUFSIZE 32
 
-void dieWithError(char *errorMessage);
+void DieWithError(char *errorMessage);
 /*
 1. Create a TCP socket using socket()
 2. Establish a connection to the server using connect()
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
   char *to_format;
   char *to_name;
 
-  if ((argc < 5) || (argc > 5))
+  if (argc != 5)
   {
     fprintf(stderr, "Usage: %s <Server IP> <Server Port> <File Path> <To Format> <To Name>\n", argv[0]);
     exit(1);
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
   to_name = argv[5];
 
   if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-    dieWithError("socket() failed");
+    DieWithError("socket() failed");
 
   // Initialize the server address structure
   memset(&serv_addr, 0, sizeof(serv_addr));
@@ -56,13 +56,13 @@ int main(int argc, char *argv[])
 
   //Start connection to the server
   if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    dieWithError("connect() failed.");
+    DieWithError("connect() failed.");
+
+  /* TODO: Open and read units from file */
 
   /* TODO: send info to the server */
 
   /* TODO: recv failure error message or success confirmation from server  */
-
-
 
   close(sock);
   exit(0);

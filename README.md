@@ -1,9 +1,13 @@
+# Protocol
 
+## Type of messages
+- Type: destination_msg
+- Syntax: | to_format | to_name |
 
-## Protocol
+- Type: unit
 
-### Type of messages
-- Type:
-- Syntax:
+## Rules (Order of Operations)
 
-### Rules
+1. Send to_format and to_name to the server
+2. Send units to server
+3. Server sends confirmation or failure message
