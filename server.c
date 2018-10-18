@@ -48,14 +48,16 @@ int main(int argc, char *argv[]){
   if(listen(serv_sock, MAXPENDING) < 0)
     DieWithError("listen() failed");
 
-  for (;;)
+  for(;;)
   {
     client_len = sizeof(client_addr);
 
     if ( (client_sock = accept(serv_sock, (struct sockaddr *) &client_addr, &client_len)) < 0)
       DieWithError("accept() failed");
+    
 
     printf("Handling client %s\n", inet_ntoa(client_addr.sin_addr));
+    handle_client(client_sock);
 
   }
 
