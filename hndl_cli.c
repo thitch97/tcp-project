@@ -6,6 +6,7 @@
 
 #define TARGETSTRSIZE 7
 #define FORMATSTRSIZE 2
+#define FILESIZESIZE 2
 
 void DieWithError(char *errorMessage);
 
@@ -18,6 +19,7 @@ void handle_client(int client_sock)
 
   char target[TARGETSTRSIZE];
   char format[FORMATSTRSIZE];
+  int file_size;
   int recvMsgSize;
   int bytes_recv = 0;
   char *error = "Formatting is incorrect.";
@@ -29,34 +31,44 @@ void handle_client(int client_sock)
 
   if ((recvMsgSize = recv(client_sock, target, TARGETSTRSIZE, 0)) < 0)
     DieWithError("recv() failed");
+  
+  if ((recvMsgSize = recv(client_sock, &file_size, FILESIZESIZE, 0)) < 0)
+    DieWithError("recv() failed");
+  
+  file_size = ntohs(file_size);
+  
   /* TODO: Write a receive that only takes one byte at a time and read until the delimiters are reached */
+
   /* TODO: Immediately after, receive one unit at a time until all units are received */
 
   while (recvMsgSize > 0)
-  {
+  { 
     if ((recvMsgSize = recv(client_sock, &type, 1, 0)) < 0)
       DieWithError("recv() failed");
 
     if (type == 0)
     {
+      printf("Handle Type 0: \n");
+      uint8_t amount;
       // Read a type 0 unit
-      printf("Type 0\n");
+      if ((recvMsgSize = recv(client_sock, &amount, 1, 0)) < 0)
+        DieWithError("recv() failed");
+      
+      // printf("Amount: %i\n", amount);
     }
     else if (type == 1)
     {
       // Read a type 1 unit
-      printf("Type 1\n");
+
     }
     else{
-      // printf("Type is invalid\n");
-      // if (send(client_sock, error, strlen(error) + 1, 0) != strlen(error) + 1)
-      //   DieWithError("send() sent a different number of bytes than expected");
+      // printf("Invalid type\n");
     }
 
   }
 
 
 
-  printf("Format: %s\nTarget: %s\n", format, target);
+  printf("Format: %s\nTarget: %s\nFile Size: %i\n", format, target, file_size);
   close(client_sock);
 }

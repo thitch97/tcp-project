@@ -2,12 +2,12 @@
 
 ## Type of messages
 - Type: format string
-- Syntax: | to_format |\0|
-  to_format: 2 bytes
+  - Syntax: | to_format |\0|
+  - to_format: 2 bytes
 
 - Type: name string
-- Syntax: | to_name |\0|
-  to_name: 256 bytes
+  - Syntax: | to_name |\0|
+  - to_name: 256 bytes
 
 - Type: 
 - Syntax: 
@@ -26,3 +26,6 @@
 ## Compilation
 Client:
 - gcc 
+
+## Code Base Referenced
+TCP/IP Sockets in C: Practical Guide for Programmers, Donahoo, M., Kenneth, C.L. (2001)

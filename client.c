@@ -1,14 +1,17 @@
 #include <stdio.h>      /* for printf() and fprintf()*/
 #include <sys/socket.h> /* for socket() , connect(), send(), and recv() */
-#include <arpa/inet.h>  /* for sockaddr_in and inet_addr */
-#include <stdlib.h>     /* for atoi() */
-#include <string.h>     /* for memset() */
-#include <unistd.h>     /* for close() */
+#include <stdbool.h>
+#include <arpa/inet.h> /* for sockaddr_in and inet_addr */
+#include <stdlib.h>    /* for atoi() */
+#include <string.h>    /* for memset() */
+#include <unistd.h>    /* for close() */
 
 #define TARGETSTRSIZE 7
 #define FORMATSTRSIZE 2
+#define FILESIZESIZE 2
 
 void DieWithError(char *errorMessage);
+
 /*
 1. Create a TCP socket using socket()
 2. Establish a connection to the server using connect()
@@ -33,11 +36,11 @@ int main(int argc, char *argv[])
   char *to_format;
   char *to_name;
   char *destination_msg;
-  char *serv_res; 
+  char *serv_res;
   int recvMsgSize;
+  char buffer[1024];
 
-
-  int bytes_recv, tot_bytes_recv;
+  int bytes_sent, tot_bytes_sent = 0;
   FILE *infp;
 
   if (argc != 6)
@@ -89,19 +92,30 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  //Move pointer to the end of file
   fseek(infp, 0, SEEK_END);
+  int filesize = ftell(infp);
+  rewind(infp);
 
-  //Get file size in bytes from ftell
-  long int size = ftell(infp);
-  printf("File size: %li\n", size);
-  uint8_t file_buffer[size];
+  int snd_size = htons(filesize);
+  if (send(sock, &snd_size, sizeof(snd_size), 0) != sizeof(snd_size))
+    DieWithError("send() sent a different number of bytes than expected");
 
-  /* Read file information*/
-  fread(file_buffer, 1, size,infp);
+  while (filesize > 0)
+  {
+    size_t num;
+    if (filesize < sizeof(buffer))
+    {
+      num = filesize;
+    }
+    else
+    {
+      num = sizeof(buffer);
+    }
 
-  /* TODO: send file to the server */
-  write(sock, file_buffer, size);
+    num = fread(buffer, 1, num, infp);
+    write(sock, &buffer, num);
+    filesize -= num;
+  }
   fclose(infp);
 
   /* TODO: recv failure error message or success confirmation from server  */
