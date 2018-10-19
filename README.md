@@ -1,15 +1,17 @@
 # Protocol
 
 ## Type of messages
-- Type: format string
-  - Syntax: | to_format |\0|
-  - to_format: 2 bytes
+Type: format string 
+===
+Syntax: | to_format |\0|
+to_format: 2 bytes
 
-- Type: name string
-  - Syntax: | to_name |\0|
-  - to_name: 256 bytes
+Type: name string
+===
+Syntax: | to_name |\0|
+to_name: 256 bytes
 
-- Type: 
+Type: 
 - Syntax: 
 
 ## Rules (Order of Operations)
@@ -25,7 +27,10 @@
 
 ## Compilation
 Client:
-- gcc 
+- gcc -o client client.c dwerror.c
+
+Server:
+- gcc -o server server.c dwerror.c hndl_client.c
 
 ## Code Base Referenced
 TCP/IP Sockets in C: Practical Guide for Programmers, Donahoo, M., Kenneth, C.L. (2001)

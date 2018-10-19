@@ -23,6 +23,7 @@ void handle_client(int client_sock)
   int recvMsgSize;
   int bytes_recv = 0;
   char *error = "Formatting is incorrect.";
+  char *success = "SUCCESS";
   uint8_t type;
 
   /* Receive message from client */
@@ -48,7 +49,6 @@ void handle_client(int client_sock)
 
     if (type == 0)
     {
-      printf("Handle Type 0: \n");
       uint8_t amount;
       // Read a type 0 unit
       if ((recvMsgSize = recv(client_sock, &amount, 1, 0)) < 0)
@@ -61,14 +61,8 @@ void handle_client(int client_sock)
       // Read a type 1 unit
 
     }
-    else{
-      // printf("Invalid type\n");
-    }
 
   }
-
-
-
   printf("Format: %s\nTarget: %s\nFile Size: %i\n", format, target, file_size);
   close(client_sock);
 }
